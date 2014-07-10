@@ -1,0 +1,314 @@
+键盘常用ASCII码  
+
+
+ESC键 VK_ESCAPE (27)
+回车键： VK_RETURN (13)
+TAB键： VK_TAB (9)
+Caps Lock键： VK_CAPITAL (20)
+Shift键： VK_SHIFT ($10)
+Ctrl键： VK_CONTROL (17)
+Alt键： VK_MENU (18)
+空格键： VK_SPACE ($20/32)
+退格键： VK_BACK (8)
+左徽标键： VK_LWIN (91)
+右徽标键： VK_LWIN (92)
+鼠标右键快捷键：VK_APPS (93) Insert键： VK_INSERT (45)
+Home键： VK_HOME (36)
+Page Up： VK_PRIOR (33)
+PageDown： VK_NEXT (34)
+End键： VK_END (35)
+Delete键： VK_DELETE (46) 方向键(←)： VK_LEFT (37)
+方向键(↑)： VK_UP (38)
+方向键(→)： VK_RIGHT (39)
+方向键(↓)： VK_DOWN (40)
+F1键： VK_F1 (112)
+F2键： VK_F2 (113)
+F3键： VK_F3 (114)
+F4键： VK_F4 (115)
+F5键： VK_F5 (116)
+F6键： VK_F6 (117)
+F7键： VK_F7 (118)
+F8键： VK_F8 (119)
+F9键： VK_F9 (120)
+F10键： VK_F10 (121)
+F11键： VK_F11 (122)
+F12键： VK_F12 (123)
+Num Lock键： VK_NUMLOCK (144)
+小键盘0： VK_NUMPAD0 (96)
+小键盘1： VK_NUMPAD0 (97)
+小键盘2： VK_NUMPAD0 (98)
+小键盘3： VK_NUMPAD0 (99)
+小键盘4： VK_NUMPAD0 (100)
+小键盘5： VK_NUMPAD0 (101)
+小键盘6： VK_NUMPAD0 (102)
+小键盘7： VK_NUMPAD0 (103)
+小键盘8： VK_NUMPAD0 (104)
+小键盘9： VK_NUMPAD0 (105)
+小键盘.： VK_DECIMAL (110)
+小键盘*： VK_MULTIPLY (106)
+小键盘 ： VK_MULTIPLY (107)
+小键盘-： VK_SUBTRACT (109)
+小键盘/： VK_DIVIDE (111)
+Pause Break键： VK_PAUSE (19)
+Scroll Lock键： VK_SCROLL (145) 
+
+0 0 0 
+(请您对文章做出评价)
+
+ASCII控制字符
+二进制	十进制	十六进制	缩写	可以显示的表示法	名称/意义
+0000 0000	0	00	NUL	?	空字符（Null）
+0000 0001	1	01	SOH	?	标题开始
+0000 0010	2	02	STX	?	本文开始
+0000 0011	3	03	ETX	?	本文结束
+0000 0100	4	04	EOT	?	传输结束
+0000 0101	5	05	ENQ	?	请求
+0000 0110	6	06	ACK	?	确认回应
+0000 0111	7	07	BEL	?	响铃
+0000 1000	8	08	BS	?	退格
+0000 1001	9	09	HT	?	水平定位符号
+0000 1010	10	0A	LF	?	换行键
+0000 1011	11	0B	VT	?	垂直定位符号
+0000 1100	12	0C	FF	?	换页键
+0000 1101	13	0D	CR	?	归位键
+0000 1110	14	0E	SO	?	取消变换（Shift out）
+0000 1111	15	0F	SI	?	启用变换（Shift in）
+0001 0000	16	10	DLE	?	跳出数据通讯
+0001 0001	17	11	DC1	?	设备控制一（XON 启用软件速度控制）
+0001 0010	18	12	DC2	?	设备控制二
+0001 0011	19	13	DC3	?	设备控制三（XOFF 停用软件速度控制）
+0001 0100	20	14	DC4	?	设备控制四
+0001 0101	21	15	NAK	?	确认失败回应
+0001 0110	22	16	SYN	?	同步用暂停
+0001 0111	23	17	ETB	?	区块传输结束
+0001 1000	24	18	CAN	?	取消
+0001 1001	25	19	EM	?	连接介质中断
+0001 1010	26	1A	SUB	?	替换
+0001 1011	27	1B	ESC	?	跳出
+0001 1100	28	1C	FS	?	文件分割符
+0001 1101	29	1D	GS	?	组群分隔符
+0001 1110	30	1E	RS	?	记录分隔符
+0001 1111	31	1F	US	?	单元分隔符
+0111 1111	127	7F	DEL	?	删除
+ASCII可显示字符
+二进制	十进制	十六进制	图形
+0010 0000	32	20	（空格）(?)
+0010 0001	33	21	!
+0010 0010	34	22	"
+0010 0011	35	23	#
+0010 0100	36	24	$
+0010 0101	37	25	 %
+0010 0110	38	26	&
+0010 0111	39	27	'
+0010 1000	40	28	(
+0010 1001	41	29	)
+0010 1010	42	2A	*
+0010 1011	43	2B	+
+0010 1100	44	2C	,
+0010 1101	45	2D	-
+0010 1110	46	2E	.
+0010 1111	47	2F	/
+0011 0000	48	30	0
+0011 0001	49	31	1
+0011 0010	50	32	2
+0011 0011	51	33	3
+0011 0100	52	34	4
+0011 0101	53	35	5
+0011 0110	54	36	6
+0011 0111	55	37	7
+0011 1000	56	38	8
+0011 1001	57	39	9
+0011 1010	58	3A	:
+0011 1011	59	3B	;
+0011 1100	60	3C	<
+0011 1101	61	3D	=
+0011 1110	62	3E	>
+0011 1111	63	3F	?
+ 	
+二进制	十进制	十六进制	图形
+0100 0000	64	40	@
+0100 0001	65	41	A
+0100 0010	66	42	B
+0100 0011	67	43	C
+0100 0100	68	44	D
+0100 0101	69	45	E
+0100 0110	70	46	F
+0100 0111	71	47	G
+0100 1000	72	48	H
+0100 1001	73	49	I
+0100 1010	74	4A	J
+0100 1011	75	4B	K
+0100 1100	76	4C	L
+0100 1101	77	4D	M
+0100 1110	78	4E	N
+0100 1111	79	4F	O
+0101 0000	80	50	P
+0101 0001	81	51	Q
+0101 0010	82	52	R
+0101 0011	83	53	S
+0101 0100	84	54	T
+0101 0101	85	55	U
+0101 0110	86	56	V
+0101 0111	87	57	W
+0101 1000	88	58	X
+0101 1001	89	59	Y
+0101 1010	90	5A	Z
+0101 1011	91	5B	[
+0101 1100	92	5C	\
+0101 1101	93	5D	]
+0101 1110	94	5E	^
+0101 1111	95	5F	_	 	
+二进制	十进制	十六进制	图形
+0110 0000	96	60	`
+0110 0001	97	61	a
+0110 0010	98	62	b
+0110 0011	99	63	c
+0110 0100	100	64	d
+0110 0101	101	65	e
+0110 0110	102	66	f
+0110 0111	103	67	g
+0110 1000	104	68	h
+0110 1001	105	69	i
+0110 1010	106	6A	j
+0110 1011	107	6B	k
+0110 1100	108	6C	l
+0110 1101	109	6D	m
+0110 1110	110	6E	n
+0110 1111	111	6F	o
+0111 0000	112	70	p
+0111 0001	113	71	q
+0111 0010	114	72	r
+0111 0011	115	73	s
+0111 0100	116	74	t
+0111 0101	117	75	u
+0111 0110	118	76	v
+0111 0111	119	77	w
+0111 1000	120	78	x
+0111 1001	121	79	y
+0111 1010	122	7A	z
+0111 1011	123	7B	{
+0111 1100	124	7C	|
+0111 1101	125	7D	}
+0111 1110	126	7E	~
+
+
+-------------------------------
+
+
+
+一. boost安装
+	1.	下载
+	2.	cd /usr/local
+			tar -zxvf boost_1_52_0.tar.gz
+	3.	./bootstrap.sh
+	4.	./bjam
+	5.	Over
+	
+ming@daoke.me
+
+二。安装c-ares DNS
+	1.	tar
+	2.	./configure
+	3.	make
+	4.	make install
+	
+三。安装curl
+	同上
+	
+四。安装protobuf + tcmalloc
+	1.	protobuf 同上
+	2.	#tar zxvf libunwind-0.98.6.tar.gz
+		#cd libunwind-0.98.6
+		#./configure
+		#make
+		#make install
+	3.	#tar zxvf google-perftools-0.94.1.tar.gz
+		#cd google*
+		#./configure
+		#make
+		#make install
+
+五。安装muduo
+	0.	安装cmake，同上；apt-get install libc++-dev；安装zlib，同上
+	1.	vi CMakeLists.txt去掉-Werror
+	2.	BUILD_TYPE=release BUILD_NO_EXAMPLES=1 ./build.sh -j2
+	3.	BUILD_TYPE=release BUILD_NO_EXAMPLES=1 INSTALL_DIR=/usr/local/ ./build.sh install
+	
+六。安装memcached
+	1.	安装libevent 
+	2.	./configure --prefix=/usr
+	3.	make
+	4.	make install
+	5.	验证：ls -al /usr/lib | grep libevent
+	
+	6.	安装memcached
+			./configure --with-libevent=/usr
+			make
+			make install
+			ls -al /usr/local/bin/mem*
+	7.	启动memcached
+			memcached -m 64 -p 11211 -u root
+	8.	查看帮助
+			memcached -h
+			
+七. 安装libmemcached
+	1.	apt-get install libcloog-ppl-dev  //gcc4.4里面的一个包
+	2.	./configure
+			make 
+			make install
+			
+八。安装redis
+	1.	make
+			make install
+		
+九。安装openssl
+	1.	./config
+			make
+			make install(可选make test)
+	2.	建立符号链接
+			ln -s /usr/local/ssl/include/openssl /usr/include/openssl
+			ldconfig
+	3.	测试
+			openssl version -a
+			
+十。安装mysql
+	1.	apt-get install mysql-client-core-5.5
+	2.	apt-get install mysql-server
+	3.	apt-get install libmysqlclient-dev
+	
+十一。安装vbox
+	1.	下载安装vbox
+	2.	下载安装vbox-Extension_Pack
+十二。安装ubuntu
+	1.	新建vbox虚拟机，选择linux--》ubuntu-64bit系统安装，安装xubuntu或者lubuntu
+	2.	中间最后安装时，断开网络，否则会下载很多东西，浪费时间
+	3.	安装vbox增强功能，注意有可能提示缺少gcc，未安装成功，需要apt-get install gcc
+	4.	mount -t vboxsf xx yy   --->共享文件夹
+	5/	apt-get install build-essential （目的是为了安装好象gcc,g++等一些工具进行编译）
+
+十三。安装qt
+	1.	不要使用root权限安装，直接运行./qt-linux-...
+	2.	安装g++---》apt-get install g++	
+
+十四。安装csmtp发邮件
+	不用安装，直接包含源码
+
+十五。安装live555
+	1.	./genMakefile
+		make
+		make install
+	2.	使用时顺序必须如下，否则可能有问题
+		-lliveMedia -lBasicUsageEnvironment -lgroupsock -lUsageEnvironment
+
+十六。安装lua
+	1.	apt-get install lua5.2 lua5.2-dev
+
+十七。安装vlc
+	1.	apt-get install vlc
+十八。安装sysstat
+	1.	apt-get install sysstat
+			
+
+------------------------------------------------------
+
+
