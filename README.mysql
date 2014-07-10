@@ -54,3 +54,500 @@ mysql> GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP
 
 ---------------------------------------------------------
 
+select * from t1, t2 where t1.id = t2.id;
+mysql -h host -u user -p
+quit
+select version(), current_date;
+select sin(pi()/4), (4+1)/5;
+select version();
+select now();
+select user(), current_date;
+\c(取消前面输入的)
+select * from my_table where name = 'Smith' and age < 30;
+show databases;
+use test(use 和quit不用分号)
+grant all on menagerie .* to 'your_mysql_name'@'your_client_host'; (不解)
+create datebase menagerie;
+use menagerie
+mysql -h host -u user -p menagerie
+show tables;
+create table pet (name varchar(20), owner varchar(20),
+species varchar(20), sex char(1), birth date, death date);
+show tables;
+describe pet;
+load data local infile '/path/pet.txt' into table pet;
+insert into pet values ('puff', 'Diane','hamster','f','1990-12-11',NULL);
+select what from table where conditions;
+select * from pet;
+delete from pet;
+load data local infile 'pet.txt' into table pet;
+update pet set birth = '1998-12-11' where name = 'Bowser';
+select * from pet where species = 'snake' or species = 'bird';
+select * from pet where (species = 'cat' and sex = 'm') or (species = 'dog' and sex = 'f');
+select name, birth from pet;
+select distinct owner from pet;
+select name, species, birth from pet where species ='dog' or species = 'cat';
+select name from pet order by birth desc;
+select name, species, birth from pet order by species, birth desc;(desc只影响birth，不影响species)
+select name, curdate(),(year(curdate())-year(birth))-(right(curdate(),5)<right(birth,5)) as age from pet;
+select ... order by name;
+select name, death, (year(curdate())-year(death))-(right(curdate(),5)-right(birth,5)) as age
+from pet where death is not null order by age;  (注意是is not null)
+select name , birth from pet where month(birth) = 5;
+select name, birth from pet where month(birth) = month(date_add(curdate(), interval 1 month)); //!!!
+select name, birth from pet where month(birth) = mod(month(curdate()), 12) +1;
+select 1 is null, 1 is not null;(不能使用1=null, 1<null, 1>null, 1<>null)
+select * from pet where name like 'b%';
+select * from pet where name like '%fy';
+select * from pet where name like '%w%';
+select * from pet where name like '_____';  (正好包含5个字符)
+select * from pet where name regexp '^b'; 
+select * from pet where name regexp binary '^b';
+select * from pet where name regexp 'fy$';
+select * from pet where name regexp 'w';
+select * from pet where name regexp '^.....$';
+select * from pet where name regexp '^.{5}$';
+select count(*) from pet;
+select owner, count(*) from pet group by owner; (group by!!!)
+select species, sex , count(*) from pet group by species, sex;
+select species,sex,count(*) from pet where species='dog' or species='cat' group by species,sex;
+select species,sex,count(*) from pet where sex is not null group by species, sex;
+create table event (name varchar(20), date date, type varchar(15),remark varchar(255));
+load data local infile 'event.txt' into table event;
+select pet.name, (year(date)-year(birth))-(right(date,5)<right(birth,5)) as age, remark 
+from pet, event where pet.name = event.name and event.type = 'litter';
+select p1.name, p1.sex, p2.name, p2.sex, p1.species from pet as p1, pet as p2
+where p1.species = p2.species and p1.sex = 'f' and p2.sex = 'm';
+select database();
+show tables;
+describe pet;
+show index from table_name;
+mysql<batch-file (批处理，直接把命令都写到batch-file)
+mysql -h host -u user -p < batch-file
+--force(出错，仍然继续执行脚本)
+mysql <batch-file | more (顺便查看输出)
+mysql <batch-file > mysql.out (cron定时执行任务时，使用批处理)
+mysql -t (批处理时，输出的内容格式与命令行时一样，否则为精简模式)
+mysql -vvv（回显被执行的命令）
+mysql> source filename; (已经进入mysql命令行时，这样用)
+mysql> \. filename;
+create table shop (
+article int(4) unsigned zerofill default '0000' not null,
+dealer char(20) default '' not null,
+price double(16,2) default '0.00' not null,
+primary key(article, dealer));
+insert into shop values (1,'a',3.45),(1,'b',3.99);
+select max(article) as article from shop;
+select article, dealer, price from shop where price = (select max(price) from shop);
+select article, dealer, price from shop order by price desc limit 1;
+select article, max(price) as price from shop group by article;
+select article, dealer, price from shop s1 where price
+=(select max(s2.price) from shop s2 where s1.article = s2.article); (真复杂)
+select @min_price:=min(price), @max_price:=max(price) from shop;(临时变量)
+select * from shop where price=@min_price or price=@max_price;
+references tbl_name(col_name)
+create table person (id smallint unsigned not null auto_increment, name char(60) not null, primary key (id) );
+create table shirt (id smallint unsigned not null auto_increment, 
+style enum('t-shirt','polo','dress') not null,
+color enum('red','blue','orange','white','black')not null,
+owner smallint unsigned not null references person(id),
+primary key (id) );
+insert into person values (null, 'autonio paz');
+select @last := last_insert_id();
+insert into shirt values (null, 'polo', 'blue', @last),(null,'dress','white',@last),
+(null,'t-shirt','blue',@last);
+insert into person values (null,'lilliana angelovska');
+select @last := last_insert_id();
+insert into shirt values (null, 'dress', 'orange', @last),(null, 'polo', 'red', @last),
+(null, 'dress', 'blue', @last),(null, 't-shirt','white', @last);
+select * from person;
+select * from shirt;
+select s.* from person p, shirt s where p.name like 'Lilliana%' and s.owner=p.id and s.color<>'white';
+show create table shirt\G   
+describe shirt;
+select field1_index, field2_index from test_table where field1_index='1' or field2_index='1';
+select field1_index, field2_index from test_table where field1_index = '1' union select 
+field1_index, field2_index from test_table where field2_index = '1';
+create table t1 (year year(4), month int(2) unsigned zerofill, day int(2) unsigned zerofill);
+insert into t1 values(2000,1,1),(2000,1,20),(2000,1,30),(2000,2,2)...;
+select year, month,bit_count(bit_or(1<<day)) as days from t1 group by year, month;
+create table animals(id mediumint not null auto_increment, name char(30) not null, primary key (id));
+insert into animals (name) values ('dog'),('cat');
+select * from animals;
+create table animals( grp enum('fish','mammal','bird') not null, 
+id mediumint not null auto_increment, name char(30) not null, primary key(grp,id));
+insert into animals (grp,name) values ('mammal','dog');
+select * from animals order by grp,id;
+alter table tbl auto_increment=100;
+(3.7孪生兄弟。太牛逼了。。几十行的sql语句)
+load data infile '/local/access_log' into table tbl_name 
+fields terminated by ',' optionally enclosed by '"' escaped by '\\'
+mysqld  mysqld_safe  mysql.server  mysqld_multi   mysql_install_db
+mysql mysqladmin mysqlcheck mysqldump mysqlhotcopy mysqlimport mysqlshow
+myisamchk   myisampack   mysqlbinlog   perror
+mysql test
+mysqladmin extended-status variables
+mysqlshow --help
+mysqldump --user=root personnel
+-h localhost |   --host==localhost
+mysql -u root -p -e "select user, host from user" mysql
+----------------------------------------------------------
+show engines;
+show variables like 'have%';
+mysqld_multi start 17
+mysqld_multi stop 8,10-13
+mysqld_multi --example
+mysql -u root -S /tmp/mysql.sock -proot_password
+GRANT SHUTDOWN ON *.* TO 'multi_admin'@'localhost' IDENTIFIED BY 'multipass';
+start instance mysqld4;
+stop instance <instance_name>
+stop instance mysqld4;
+show instances;
+show instances status <instance_name>
+show instance status mysqld3;
+show instance options <instance_name>
+show instance options mysqld3;
+show <instance_name> log files;
+show mysqld log files;
+show mysqld log general 21,2;
+set mysqld2.port = 3322;
+flush instances;
+unset mysqld2.port;
+
+
+
+
+-------------------------------------------------------
+
+
+mysql_errno返回值的意义 mysql_errno()代码解析大全
+
+mysql_errno返回值的意义 mysql_errno()代码解析大全
+2010年08月30日
+　　Error Code                                    Constant Name                                      198                                      ER_ERROR_MESSAGES                   
+　　1000                                    ER_HASHCHK                   
+　　1001                                    ER_NISAMCHK                   
+　　1002                                    ER_NO                   
+　　1003                                    ER_YES                   
+　　1004                                    ER_CANT_CREATE_FILE                   
+　　1005                                    ER_CANT_CREATE_TABLE                   
+　　1006                                    ER_CANT_CREATE_DB                   
+　　1007                                    ER_DB_CREATE_EXISTS                   
+　　1008                                    ER_DB_DROP_EXISTS                   
+　　1009                                    ER_DB_DROP_DELETE                   
+　　1010                                    ER_DB_DROP_RMDIR                   
+　　1011                                    ER_CANT_DELETE_FILE                   
+　　1012                                    ER_CANT_FIND_SYSTEM_REC                   
+　　1013                                    ER_CANT_GET_STAT                   
+　　1014                                    ER_CANT_GET_WD                   
+　　1015                                    ER_CANT_LOCK                   
+　　1016                                    ER_CANT_OPEN_FILE                   
+　　1017                                    ER_FILE_NOT_FOUND                   
+　　1018                                    ER_CANT_READ_DIR                   
+　　1019                                    ER_CANT_SET_WD                   
+　　1020                                    ER_CHECKREAD                   
+　　1021                                    ER_DISK_FULL                   
+　　1022                                    ER_DUP_KEY                   
+　　1023                                    ER_ERROR_ON_CLOSE                   
+　　1024                                    ER_ERROR_ON_READ                   
+　　1025                                    ER_ERROR_ON_RENAME                   
+　　1026                                    ER_ERROR_ON_WRITE                   
+　　1027                                    ER_FILE_USED                   
+　　1028                                    ER_FILSORT_ABORT                   
+　　1029                                    ER_FORM_NOT_FOUND                   
+　　1030                                    ER_GET_ERRNO                   
+　　1031                                    ER_ILLEGAL_HA                   
+　　1032                                    ER_KEY_NOT_FOUND                   
+　　1033                                    ER_NOT_FORM_FILE                   
+　　1034                                    ER_NOT_KEYFILE                   
+　　1035                                    ER_OLD_KEYFILE                   
+　　1036                                    ER_OPEN_AS_READONLY                   
+　　1037                                    ER_OUTOFMEMORY                   
+　　1038                                    ER_OUT_OF_SORTMEMORY                   
+　　1039                                    ER_UNEXPECTED_EOF                   
+　　1040                                    ER_CON_COUNT_ERROR                   
+　　1041                                    ER_OUT_OF_RESOURCES                   
+　　1042                                    ER_BAD_HOST_ERROR                   
+　　1043                                    ER_HANDSHAKE_ERROR                   
+　　1044                                    ER_DBACCESS_DENIED_ERROR                   
+　　1045                                    ER_ACCESS_DENIED_ERROR                   
+　　1046                                    ER_NO_DB_ERROR                   
+　　1047                                    ER_UNKNOWN_COM_ERROR                   
+　　1048                                    ER_BAD_NULL_ERROR                   
+　　1049                                    ER_BAD_DB_ERROR                   
+　　1050                                    ER_TABLE_EXISTS_ERROR                   
+　　1051                                    ER_BAD_TABLE_ERROR                   
+　　1052                                    ER_NON_UNIQ_ERROR                   
+　　1053                                    ER_SERVER_SHUTDOWN                   
+　　1054                                    ER_BAD_FIELD_ERROR                   
+　　1055                                    ER_WRONG_FIELD_WITH_GROUP                   
+　　1056                                    ER_WRONG_GROUP_FIELD                   
+　　1057                                    ER_WRONG_SUM_SELECT                   
+　　1058                                    ER_WRONG_VALUE_COUNT                   
+　　1059                                    ER_TOO_LONG_IDENT                   
+　　1060                                    ER_DUP_FIELDNAME                   
+　　1061                                    ER_DUP_KEYNAME                   
+　　1062                                    ER_DUP_ENTRY                   
+　　1063                                    ER_WRONG_FIELD_SPEC                   
+　　1064                                    ER_PARSE_ERROR                   
+　　1065                                    ER_EMPTY_QUERY                   
+　　1066                                    ER_NONUNIQ_TABLE                   
+　　1067                                    ER_INVALID_DEFAULT                   
+　　1068                                    ER_MULTIPLE_PRI_KEY                   
+　　1069                                    ER_TOO_MANY_KEYS                   
+　　1070                                    ER_TOO_MANY_KEY_PARTS                   
+　　1071                                    ER_TOO_LONG_KEY                   
+　　1072                                    ER_KEY_COLUMN_DOES_NOT_EXITS                   
+　　1073                                    ER_BLOB_USED_AS_KEY                   
+　　1074                                    ER_TOO_BIG_FIELDLENGTH                   
+　　1075                                    ER_WRONG_AUTO_KEY                   
+　　1076                                    ER_READY                   
+　　1077                                    ER_NORMAL_SHUTDOWN                   
+　　1078                                    ER_GOT_SIGNAL                   
+　　1079                                    ER_SHUTDOWN_COMPLETE                   
+　　1080                                    ER_FORCING_CLOSE                   
+　　1081                                    ER_IPSOCK_ERROR                   
+　　1082                                    ER_NO_SUCH_INDEX                   
+　　1083                                    ER_WRONG_FIELD_TERMINATORS                   
+　　1084                                    ER_BLOBS_AND_NO_TERMINATED                   
+　　1085                                    ER_TEXTFILE_NOT_READABLE                   
+　　1086                                    ER_FILE_EXISTS_ERROR                   
+　　1087                                    ER_LOAD_INFO                   
+　　1088                                    ER_ALTER_INFO                   
+　　1089                                    ER_WRONG_SUB_KEY                   
+　　1090                                    ER_CANT_REMOVE_ALL_FIELDS                   
+　　1091                                    ER_CANT_DROP_FIELD_OR_KEY                   
+　　1092                                    ER_INSERT_INFO                   
+　　1093                                    ER_INSERT_TABLE_USED                   
+　　1094                                    ER_NO_SUCH_THREAD                   
+　　1095                                    ER_KILL_DENIED_ERROR                   
+　　1096                                    ER_NO_TABLES_USED                   
+　　1097                                    ER_TOO_BIG_SET                   
+　　1098                                    ER_NO_UNIQUE_LOGFILE                   
+　　1099                                    ER_TABLE_NOT_LOCKED_FOR_WRITE                   
+　　1100                                    ER_TABLE_NOT_LOCKED                   
+　　1101                                    ER_BLOB_CANT_HAVE_DEFAULT                   
+　　1102                                    ER_WRONG_DB_NAME                   
+　　1103                                    ER_WRONG_TABLE_NAME                   
+　　1104                                    ER_TOO_BIG_SELECT                   
+　　1105                                    ER_UNKNOWN_ERROR                   
+　　1106                                    ER_UNKNOWN_PROCEDURE                   
+　　1107                                    ER_WRONG_PARAMCOUNT_TO_PROCEDURE                   
+　　1108                                    ER_WRONG_PARAMETERS_TO_PROCEDURE                   
+　　1109                                    ER_UNKNOWN_TABLE                   
+　　1110                                    ER_FIELD_SPECIFIED_TWICE                   
+　　1111                                    ER_INVALID_GROUP_FUNC_USE                   
+　　1112                                    ER_UNSUPPORTED_EXTENSION                   
+　　1113                                    ER_TABLE_MUST_HAVE_COLUMNS                   
+　　1114                                    ER_RECORD_FILE_FULL                   
+　　1115                                    ER_UNKNOWN_CHARACTER_SET                   
+　　1116                                    ER_TOO_MANY_TABLES                   
+　　1117                                    ER_TOO_MANY_FIELDS                   
+　　1118                                    ER_TOO_BIG_ROWSIZE                   
+　　1119                                    ER_STACK_OVERRUN                   
+　　1120                                    ER_WRONG_OUTER_JOIN                   
+　　1121                                    ER_NULL_COLUMN_IN_INDEX                   
+　　1122                                    ER_CANT_FIND_UDF                   
+　　1123                                    ER_CANT_INITIALIZE_UDF                   
+　　1124                                    ER_UDF_NO_PATHS                   
+　　1125                                    ER_UDF_EXISTS                   
+　　1126                                    ER_CANT_OPEN_LIBRARY                   
+　　1127                                    ER_CANT_FIND_DL_ENTRY                   
+　　1128                                    ER_FUNCTION_NOT_DEFINED                   
+　　1129                                    ER_HOST_IS_BLOCKED                   
+　　1130                                    ER_HOST_NOT_PRIVILEGED                   
+　　1131                                    ER_PASSWORD_ANONYMOUS_USER                   
+　　1132                                    ER_PASSWORD_NOT_ALLOWED                   
+　　1133                                    ER_PASSWORD_NO_MATCH                   
+　　1134                                    ER_UPDATE_INFO                   
+　　1135                                    ER_CANT_CREATE_THREAD                   
+　　1136                                    ER_WRONG_VALUE_COUNT_ON_ROW                   
+　　1137                                    ER_CANT_REOPEN_TABLE                   
+　　1138                                    ER_INVALID_USE_OF_NULL                   
+　　1139                                    ER_REGEXP_ERROR                   
+　　1140                                    ER_MIX_OF_GROUP_FUNC_AND_FIELDS                   
+　　1141                                    ER_NONEXISTING_GRANT                   
+　　1142                                    ER_TABLEACCESS_DENIED_ERROR                   
+　　1143                                    ER_COLUMNACCESS_DENIED_ERROR                   
+　　1144                                    ER_ILLEGAL_GRANT_FOR_TABLE                   
+　　1145                                    ER_GRANT_WRONG_HOST_OR_USER                   
+　　1146                                    ER_NO_SUCH_TABLE                   
+　　1147                                    ER_NONEXISTING_TABLE_GRANT                   
+　　1148                                    ER_NOT_ALLOWED_COMMAND                   
+　　1149                                    ER_SYNTAX_ERROR                   
+　　1150                                    ER_DELAYED_CANT_CHANGE_LOCK                   
+　　1151                                    ER_TOO_MANY_DELAYED_THREADS                   
+　　1152                                    ER_ABORTING_CONNECTION                   
+　　1153                                    ER_NET_PACKET_TOO_LARGE                   
+　　1154                                    ER_NET_READ_ERROR_FROM_PIPE                   
+　　1155                                    ER_NET_FCNTL_ERROR                   
+　　1156                                    ER_NET_PACKETS_OUT_OF_ORDER                   
+　　1157                                    ER_NET_UNCOMPRESS_ERROR                   
+　　1158                                    ER_NET_READ_ERROR                   
+　　1159                                    ER_NET_READ_INTERRUPTED                   
+　　1160                                    ER_NET_ERROR_ON_WRITE                   
+　　1161                                    ER_NET_WRITE_INTERRUPTED                   
+　　1162                                    ER_TOO_LONG_STRING                   
+　　1163                                    ER_TABLE_CANT_HANDLE_BLOB                   
+　　1164                                    ER_TABLE_CANT_HANDLE_AUTO_INCREMENT                   
+　　1165                                    ER_DELAYED_INSERT_TABLE_LOCKED                   
+　　1166                                    ER_WRONG_COLUMN_NAME                   
+　　1167                                    ER_WRONG_KEY_COLUMN                   
+　　1168                                    ER_WRONG_MRG_TABLE                   
+　　1169                                    ER_DUP_UNIQUE                   
+　　1170                                    ER_BLOB_KEY_WITHOUT_LENGTH                   
+　　1171                                    ER_PRIMARY_CANT_HAVE_NULL                   
+　　1172                                    ER_TOO_MANY_ROWS                   
+　　1173                                    ER_REQUIRES_PRIMARY_KEY                   
+　　1174                                    ER_NO_RAID_COMPILED                   
+　　1175                                    ER_UPDATE_WITHOUT_KEY_IN_SAFE_MODE                   
+　　1176                                    ER_KEY_DOES_NOT_EXITS                   
+　　1177                                    ER_CHECK_NO_SUCH_TABLE                   
+　　1178                                    ER_CHECK_NOT_IMPLEMENTED                   
+　　1179                                    ER_CANT_DO_THIS_DURING_AN_TRANSACTION                   
+　　1180                                    ER_ERROR_DURING_COMMIT                   
+　　1181                                    ER_ERROR_DURING_ROLLBACK                   
+　　1182                                    ER_ERROR_DURING_FLUSH_LOGS                   
+　　1183                                    ER_ERROR_DURING_CHECKPOINT                   
+　　1184                                    ER_NEW_ABORTING_CONNECTION                   
+　　1185                                    ER_DUMP_NOT_IMPLEMENTED                   
+　　1186                                    ER_FLUSH_MASTER_BINLOG_CLOSED                   
+　　1187                                    ER_INDEX_REBUILD                   
+　　1188                                    ER_MASTER                   
+　　1189                                    ER_MASTER_NET_READ                   
+　　1190                                    ER_MASTER_NET_WRITE                   
+　　1191                                    ER_FT_MATCHING_KEY_NOT_FOUND                   
+　　1192                                    ER_LOCK_OR_ACTIVE_TRANSACTION                   
+　　1193                                    ER_UNKNOWN_SYSTEM_VARIABLE                   
+　　1194                                    ER_CRASHED_ON_USAGE                   
+　　1195                                    ER_CRASHED_ON_REPAIR                   
+　　1196                                    ER_WARNING_NOT_COMPLETE_ROLLBACK                   
+　　1197                                    ER_TRANS_CACHE_FULL                   
+　　2000                                    CR_UNKNOWN_ERROR                   
+　　2001                                    CR_SOCKET_CREATE_ERROR                   
+　　2002                                    CR_CONNECTION_ERROR                   
+　　2003                                    CR_CONN_HOST_ERROR                   
+　　2004                                    CR_IPSOCK_ERROR                   
+　　2005                                    CR_UNKNOWN_HOST                   
+　　2006                                    CR_SERVER_GONE_ERROR                   
+　　2007                                    CR_VERSION_ERROR                   
+　　2008                                    CR_OUT_OF_MEMORY                   
+　　2009                                    CR_WRONG_HOST_INFO                   
+　　2010                                    CR_LOCALHOST_CONNECTION                   
+　　2011                                    CR_TCP_CONNECTION                   
+　　2012                                    CR_SERVER_HANDSHAKE_ERR                   
+　　2013                                    CR_SERVER_LOST                   
+　　2014                                    CR_COMMANDS_OUT_OF_SYNC                   
+　　2015                                    CR_NAMEDPIPE_CONNECTION                   
+　　2016                                    CR_NAMEDPIPEWAIT_ERROR                   
+　　2017                                    CR_NAMEDPIPEOPEN_ERROR                   
+　　2018                                    CR_NAMEDPIPESETSTATE_ERROR                   
+　　2019                                    CR_CANT_READ_CHARSET                   
+　　2020                                    CR_NET_PACKET_TOO_LARGE                   
+**********************中文解释******************************** 
+　　1005：创建表失败  
+　　1006：创建数据库失败  
+　　1007：数据库已存在，创建数据库失败  
+　　1008：数据库不存在，删除数据库失败  
+　　1009：不能删除数据库文件导致删除数据库失败  
+　　1010：不能删除数据目录导致删除数据库失败  
+　　1011：删除数据库文件失败  
+　　1012：不能读取系统表中的记录  
+　　1016: 无法打开文件  
+　　击后 开始=>所有程序=>附件=>命令提示符  
+　　输入 mysql 所在硬盘盘符  
+　　cd mysql 所在目录  
+　　cd bin  
+　　输入 myisamchk -f D:\usr\local\mysql\data\bbs\PW_membars.MYI  
+　　ps : D:\usr\local\mysql\data\bbs 是你论坛数据库的路径  
+　　-f 根据具体情况选择，一般也可以选择 -r  
+　　注意你的 系统C盘或放数据库的硬盘空间是否足够，一般小于 1G 很容易出现错误。  
+　　1020：记录已被其他用户修改  
+　　1021：硬盘剩余空间不足，请加大硬盘可用空间  
+　　1022：关键字重复，更改记录失败  
+　　1023：关闭时发生错误  
+　　1024：读文件错误  
+　　1025：更改名字时发生错误  
+　　1026：写文件错误  
+　　1032：记录不存在  
+　　1036：数据表是只读的，不能对它进行修改  
+　　1037：系统内存不足，请重启数据库或重启服务器  
+　　1038：用于排序的内存不足，请增大排序缓冲区  
+　　1040：已到达数据库的最大连接数，请加大数据库可用连接数  
+　　1041：系统内存不足  
+　　1042：无效的主机名  
+　　1043：无效连接  
+　　1044：当前用户没有访问数据库的权限  
+　　1045：不能连接数据库，用户名或密码错误  
+　　方法1:确保论坛data目录下的sql_config.php用户名与密码都正确.如果用户忘记了数据库的密码,可以按如下方式进行  
+　　密码的修改:  
+　　如果 MySQL 正在运行，首先停止。  
+　　启动 MySQL ：bin/safe_mysqld --skip-grant-tables &  
+　　就可以不需要密码就进入 MySQL 了。  
+　　然后就是  
+　　>use mysql  
+　　>update user set password=password("new_pass") where user="root";  
+　　>flush privileges;  
+　　方法2：在数据库用户名和密码都正确的情况下，出现这个错误，检查论坛有没有写入的权限。  
+　　1040: 最大连接数  
+　　方法:在my.ini修改max_connections=100为max_connections=1000或更大,重启mysql  
+　　1048：字段不能为空  
+　　1049：数据库不存在  
+　　1050：数据表已存在  
+　　1051：数据表不存在  
+　　1054：字段不存在  
+　　1065：无效的SQL语句，SQL语句为空  
+　　1081：不能建立Socket连接  
+　　1114：数据表已满，不能容纳任何记录  
+　　1116：打开的数据表太多  
+　　1129：数据库出现异常，请重启数据库  
+　　1130：连接数据库失败，没有连接数据库的权限  
+　　1133：数据库用户不存在  
+　　1141：当前用户无权访问数据库  
+　　1142：当前用户无权访问数据表  
+　　1143：当前用户无权访问数据表中的字段  
+　　1146：数据表不存在  
+　　1147：未定义用户对数据表的访问权限  
+　　1149：SQL语句语法错误  
+　　1158：网络错误，出现读错误，请检查网络连接状况  
+　　1159：网络错误，读超时，请检查网络连接状况  
+　　1160：网络错误，出现写错误，请检查网络连接状况  
+　　1161：网络错误，写超时，请检查网络连接状况  
+　　1062：字段值重复，入库失败  
+　　方法:  
+　　1.如果出类似主码为"65535"的错误,可以查看相关表的自增字段,将字段值改在就可以  
+　　2.确保相关数据表中主码重复的字段是否存在,如果存在删除这条记录  
+　　3.备份数据库,修复相关表(注:这种情况比较常见,如pw_posts表,对表进行修复的时候不要忘 记备份).  
+　　1169：字段值重复，更新记录失败  
+　　1177：打开数据表失败  
+　　1180：提交事务失败  
+　　1181：回滚事务失败  
+　　1203：当前用户和数据库建立的连接已到达数据库的最大连接数，请增大可用的数据库连接数或重启数据库  
+　　1205：加锁超时  
+　　1211：当前用户没有创建用户的权限  
+　　1216：外键约束检查失败，更新子表记录失败  
+　　1217：外键约束检查失败，删除或修改主表记录失败  
+　　1226：当前用户使用的资源已超过所允许的资源，请重启数据库或重启服务器  
+　　1227：权限不足，您无权进行此操作  
+　　1235：MySQL版本过低，不具有本功能  
+　　10061: 方法: 启动这台机器上的MySQL服务  
+　　如服务启动失败  
+　　一定是你的my.ini文件出了差错，  
+　　MySQL服务不能正常启动  
+　　你删除了它后，MySQL就会按其默认配置运行，  
+　　那就没有问题了  
+　　10048:  
+　　建议在my.ini文件中修改最大连接数，  
+　　把 mysql_connect() 方法都改成了 mysql_pconnect() 方法.  
+　　要修改mysql_pconnect()，可以在论坛的data目录的sql_config.php中  
+　　$pconnect = 0; //是否持久连接  
+　　修改成$pconnect = 1;  
+　　开启防刷新,严禁刷新太快.  
+　　10055:没有缓存空间可利用  
+　　方法:查看下你的C盘空间是否已经满,清除一些没有用的文件.  
+
+
+----------------------------------------------------
+
+
+
