@@ -40,13 +40,13 @@ local ok, err, errno, sqlstate = db:connect{
 	host = "127.0.0.1",
 	port = 3306,
 	database = "ngx_test",
-	user = "ngx_test",
-	password = "ngx_test",
+	user = "root",
+	password = "zhangzhonghua",
 	max_packet_size = 1024 * 1024
 }
 
 if not ok then
-	ngx.say(""failed to connect: ", err, ": ", errno, " ", sqlstate")
+	ngx.say("failed to connect: ", err, ": ", errno, " ", sqlstate)
 	return
 end
 
