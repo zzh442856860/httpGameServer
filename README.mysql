@@ -1,0 +1,56 @@
+一、开发环境的准备
+1、首先要安装好Linux，这里用的是Ubuntu 10.10
+2、安装MySQL系列软件包，这边10.10系统仓库里面的是MySQL5.1版本：
+sudo apt-get install mysql-server
+sudo apt-get install mysql-client
+sudo apt-get install libmysqlclient15-dev
+
+二、检查MySQL服务的状态
+1、查看当前的mysql服务状态
+sudo /etc/init.d/mysql status
+2、也可以用以下检查mysql服务是否有启动，如果结果为空，则没有启动：
+sudo netstat -tap | grep mysql 或
+ps -ef | grep mysql
+
+三、启动/停止/重启MySQL服务
+1、启动：sudo /etc/init.d/mysql start
+2、停止：sudo /etc/init.d/mysql stop
+3、重启：sudo /etc/init.d/mysql restart
+
+四、在命令行使用MySQL客户端访问数据库
+1、访问本地主机：
+mysql -uuser -ppassword db_name
+2、访问远程主机：
+mysql -hhost -uuser -ppassword db_name
+备注：由于默认的配置是只能从本机访问，www.linuxidc.com只要注释掉/etc/mysql/my.cnf里面的bind-address这行，就可以让远程主机访问了。
+3、执行管理操作：
+使用mysqladmin及相关参数
+4、备份 db_name 数据库：
+mysqldump -uroot -p --default-character-set=utf8 --opt     --extended-insert=false --triggers -R --hex-blob -x db_name > bak.sql
+5、恢复db_name数据库：
+mysql -uroot -p db_name < bak.sql
+6、备份tbl_name 数据表：
+select * into outfile '/usr/local/mysql/f.txt' fields terminated by '|' from tbl_name;
+7、把文件/home/a.txt导入数据库中的 tbl_name表
+mysql> load data local infile '/home/a.txt'  into table tbl_name fields terminated by ',' lines terminated by '\r\n';
+8、设置mysql数据库root的初始密码
+shell> mysql -u root 
+mysql> SET PASSWORD FOR ''@'localhost' = PASSWORD('newpwd'); 
+mysql> SET PASSWORD FOR ''@'host_name' = PASSWORD('newpwd');
+9、为普通用户修改密码：
+mysql> SET PASSWORD FOR 'user_name'@'host_name' = PASSWORD('newpwd');
+10、建立超级用户账户，具有完全的权限可以做任何事情：
+mysql> GRANT ALL PRIVILEGES ON *.* TO 'monty'@'localhost' 
+->     IDENTIFIED BY 'some_pass' WITH GRANT OPTION; 
+mysql> GRANT ALL PRIVILEGES ON *.* TO 'monty'@'%' 
+->     IDENTIFIED BY 'some_pass' WITH GRANT OPTION; 
+备注：第一句建立用于本机连接的帐户，第二句建立用于从其他主机连接的帐户。
+11、建立帐户custom，可以访问bankaccount数据库，但只能从本机访问
+mysql> GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP 
+->     ON bankaccount.* 
+->     TO 'custom'@'localhost' 
+->     IDENTIFIED BY 'obscure';
+
+
+---------------------------------------------------------
+
