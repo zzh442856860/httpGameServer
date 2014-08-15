@@ -9,3 +9,4 @@
 2014/07/11 02:19:07 [error] 25193#0: *5 failed to load external Lua file "/home/zzh/Desktop/openresty/lua/test.lua": /home/zzh/Desktop/openresty/lua/test.lua:49: ')' expected near 'failed', client: 192.168.1.107, server: , request: "GET /lua HTTP/1.1", host: "192.168.1.106:8080"
 2014/07/11 02:19:07 [error] 25193#0: *6 open() "/home/zzh/Desktop/openresty/html/favicon.ico" failed (2: No such file or directory), client: 192.168.1.107, server: , request: "GET /favicon.ico HTTP/1.1", host: "192.168.1.106:8080"
 2014/07/11 02:20:30 [error] 25193#0: *6 failed to load external Lua file "/home/zzh/Desktop/openresty/lua/test.lua": /home/zzh/Desktop/openresty/lua/test.lua:49: ')' expected near 'failed', client: 192.168.1.107, server: , request: "GET /lua HTTP/1.1", host: "192.168.1.106:8080"
+2014/08/11 13:26:54 [alert] 2773#0: lua_code_cache is off; this will hurt performance in /home/zzh/Desktop/httpGameServer/conf/nginx.conf:9
