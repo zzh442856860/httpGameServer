@@ -1,39 +1,28 @@
---
 
 local ServerAppBase = class("ServerAppBase")
 
-ServerAppBase.APP_RUN_EVENT 	= "APP_RUN_EVENT"
-ServerAppBase.APP_QUIT_EVENT	= "APP_QUIT_EVENT"
-ServerAppBase.CLIENT_ABORT_EVENT	= "CLIENT_ABORT_EVENT"
-
 function ServerAppBase:ctor( config )
-	cc.GameObject.extend(self)
-    self:addComponent("components.behavior.EventProtocol"):exportmethods()
+	self.isRunning = true
+	self.config = clone(totable(config))
+	self.config.appModuleName = config.appModuleName or "app"
+	self.config.actionPackage = config.actionPackage or "actions"
+	self.config.actionModuleSuffix = config.actionModuleSuffix or "Action"
 
-    self.isRunning = true
-    self.config = clone(totable(config))
-    self.config.appModuleName = config.appModuleName or "app"
-    self.config.actionPackage = config.actionPackage or "actions"
-    self.config.actionModuleSuffix = config.actionModuleSuffix or "Action"
 end
 
-function ServerAppBase:run( )
-	self:dispatchEvent({name = ServerAppBase.APP_RUN_EVENT})
-	local ret = self:runEventLoop()
-	self.isRunning = false
-	self:dispatchEvent({name = ServerAppBase.APP_QUIT_EVENT, ret = ret})
+function ServerAppBase:run(  )
+	self:process()
+	self.isRunning =false
 end
 
-function ServerAppBase:runEventLoop(  )
-	throw(ERR_SERVER_OPERATION_FAILED, "ServerAppBase:runEventLoop() - must override in inherited class")
+function ServerAppBase:process(  )
+	throw(ERR_SERVER_OPERATION_FAILED, "ServerAppBase:process() - must override in inherited class")
 end
 
-function ServerAppBase:doRequest( actionName, data)
+function ServerAppBase:doRequest( actionName, data )
 	local actionModuleName, actionMethodName = self:normalizeActionName(actionName)
-    actionModuleName = string.format("%s.%s%s", self.config.actionPackage, string.ucfirst(actionModuleName), self.config.actionModuleSuffix)
+	actionModuleName = string.format("%s.%s%s", self.config.actionPackage, string.ucfirst(actionModuleName), self.config.actionModuleSuffix)
     actionMethodName = actionMethodName .. "Action"
-
-    --echoInfo("ServerAppBase:doRequest: ", actionModuleName, actionMethodName)
 
     local actionModule = self:require(actionModuleName)
     local t = type(actionModule)
@@ -69,12 +58,12 @@ function ServerAppBase:normalizeActionName( actionName )
 	actionName = string.gsub(actionName, "^[.]+", "")
     actionName = string.gsub(actionName, "[.]+$", "")
 
-    local parts = string.split(actionName, ".")
-    if #parts == 1 then parts[2] = 'index' end   --why?? what means?
-    return parts[1], parts[2]
+	local parts = string.split(actionName, ".")
+	if #parts == 1 then parts[2] = 'index' end 
+	return parts[1], parts[2]
 end
 
-function ServerAppBase:newRedis( config )
+function ServerAppBase:newReids( config )
 	local redis = cc.server.RedisEasy.new(config or self.config.redis)
 	local ok, err = redis:connect()
 	if not ok then
@@ -85,12 +74,40 @@ end
 
 function ServerAppBase:getRedis(  )
 	if not self.redis then
-		self.redis = self:newRedis()
+		self.redis = self:newReids()
+	end
+	return self.redis 
+end
+
+function ServerAppBase:processMessage( rawMessage )
+	local ok, message = self:parseMessage(rawMessage)
+	if not ok then
+		return false, message 
 	end 
 
-	return self.redis
+	local msgid = message.id 
+	local actionName = message.action 
+	local result = self:doRequest(actionName, message)
+
+	if result then
+		ngx.say(json.encode(result))
+	end 
+
+	return true
+end
+
+function ServerAppBase:parseMessage( rawMessage )
+	if self.config.httpMessageFormat == "json" then
+		local message = json.decode(rawMessage)
+		if type(message) == "table" then
+			return true, message
+		else 
+			return false, string.format("invalid message format %s", tostring(rawMessage))
+		end 
+	else
+		return false, string.format("not support message format %s", tostring(self.config.httpMessageFormat))
+	end 
 end
 
 return ServerAppBase
-
 

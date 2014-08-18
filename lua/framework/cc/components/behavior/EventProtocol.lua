@@ -132,10 +132,10 @@ function EventProtocol:setEventProtocolDebugEnabled( enabled )
 	return self  --why return? should return nothind
 end
 
-function EventProtocol:exportmethods(  )
+function EventProtocol:exportmethods( )
 	-- body
 	--来自Component的成员变量
-	self:exportmethods_({
+	self:exportMethods_({
 		"addEventListener",
 		"dispatchEvent",
 		"removeEventListener",

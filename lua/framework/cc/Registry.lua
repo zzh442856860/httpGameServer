@@ -27,6 +27,7 @@ function Registry.newObject( name )
 			-- body
 			cls = require(name)
 			Registry.add(cls, name)
+			--Registry.add(cls, name)
 		end)
 	end
 	assert(cls ~= nil, string.format("Registry.newObject() - invalid class \"%s\"", tostring(name)))

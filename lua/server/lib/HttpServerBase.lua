@@ -24,10 +24,37 @@ function HttpServerBase:ctor( config )
 	if self.config.session then
 		self.session = cc.server.Session.new(self)
 	end
+
 end
 
 function HttpServerBase:runEventLoop(  )
 	-- body
+end
+
+function HttpServerBase:processMessage( rawMessage )
+	local ok, message = self:parseMessage(rawMessage)
+	if not ok then
+		return false, message 
+	end
+
+	local msgid = message._id_
+	local actionName = message.action 
+	local result = self:doRequest(actionName, message)
+
+	
+end
+
+function HttpServerBase:parseMessage( rawMessage )
+	if self.config.httpMessageFormat == "json" then
+		local message = json.decode(rawMessage)
+		if type(message) == "table" then
+			return true, message
+		else
+			return false, string.format("invalid message format %s", tostring(rawMessage))
+		end
+	else
+		return false, string.format("not support message format %s", tostring(self.config.httpMessageFormat))
+	end
 end
 
 return HttpServerBase

@@ -31,9 +31,8 @@ function HttpServerApp:onRequestError( actionName, result )
 	echoInfo("onRequestError actionName: %s , result: %s", (self.requestParameters.action or "nil"), result)
 end
 
-function HttpServerApp:runEventLoop( )
-	-- body
-	
+function HttpServerApp:process(  )
+	HttpServerApp.super.process()
 end
 
 return HttpServerApp
