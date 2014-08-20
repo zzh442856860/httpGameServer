@@ -2,27 +2,32 @@
 local ServerAppBase = class("ServerAppBase")
 
 function ServerAppBase:ctor( config )
+	--ngx.say("ServerAppBase:ctor")
 	self.isRunning = true
 	self.config = clone(totable(config))
-	self.config.appModuleName = config.appModuleName or "app"
+	self.config.appModuleName = config.appModuleName or "server"
 	self.config.actionPackage = config.actionPackage or "actions"
 	self.config.actionModuleSuffix = config.actionModuleSuffix or "Action"
-
 end
 
-function ServerAppBase:run(  )
+function ServerAppBase:run( )
+	ngx.say("ServerAppBase:run")
 	self:process()
 	self.isRunning =false
 end
 
-function ServerAppBase:process(  )
+function ServerAppBase:process( )
+	ngx.say("---ServerAppBase:process")
 	throw(ERR_SERVER_OPERATION_FAILED, "ServerAppBase:process() - must override in inherited class")
 end
 
 function ServerAppBase:doRequest( actionName, data )
+	ngx.say("---ServerAppBase:doRequest")
 	local actionModuleName, actionMethodName = self:normalizeActionName(actionName)
+	--ngx.say(actionModuleName, " ", actionMethodName)
 	actionModuleName = string.format("%s.%s%s", self.config.actionPackage, string.ucfirst(actionModuleName), self.config.actionModuleSuffix)
     actionMethodName = actionMethodName .. "Action"
+    --ngx.say(actionModuleName, " ", actionMethodName)
 
     local actionModule = self:require(actionModuleName)
     local t = type(actionModule)
@@ -80,13 +85,17 @@ function ServerAppBase:getRedis(  )
 end
 
 function ServerAppBase:processMessage( rawMessage )
+	ngx.say("ServerAppBase:processMessage")
+
 	local ok, message = self:parseMessage(rawMessage)
 	if not ok then
+		ngx.say("not ok ", message)
 		return false, message 
 	end 
 
 	local msgid = message.id 
 	local actionName = message.action 
+	ngx.say(message.id, " ", message.action)
 	local result = self:doRequest(actionName, message)
 
 	if result then
@@ -97,6 +106,8 @@ function ServerAppBase:processMessage( rawMessage )
 end
 
 function ServerAppBase:parseMessage( rawMessage )
+	ngx.say("ServerAppBase:parseMessage")
+	--ngx.say(rawMessage)
 	if self.config.httpMessageFormat == "json" then
 		local message = json.decode(rawMessage)
 		if type(message) == "table" then

@@ -3,7 +3,7 @@ local config = {
     appModuleName             = "server",
     debug                     = true,
 
-    MessageFormat             = "json",
+    httpMessageFormat             = "json",
 
     pushMessageChannelPattern = "channel.%s",
     sharedMemoryDictName      = "TestApp",
